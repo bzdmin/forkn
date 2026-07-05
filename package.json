@@ -1,0 +1,139 @@
+{
+  "name": "forkn",
+  "displayName": "Forkn",
+  "description": "One sidebar. Every AI agent. All at once. Run Claude Code, Codex CLI, Antigravity CLI, and OpenCode in parallel.",
+  "version": "1.0.0",
+  "publisher": "forkn",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bzdmin/forkn"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "claude",
+    "codex",
+    "antigravity",
+    "opencode",
+    "multi-agent",
+    "parallel",
+    "orchestration"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "icon": "media/icon.png",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "forkn-sidebar",
+          "title": "Forkn",
+          "icon": "media/forkn-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "forkn-sidebar": [
+        {
+          "type": "webview",
+          "id": "forkn.dashboard",
+          "name": ""
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "forkn.newTask",
+        "title": "Forkn: New Task"
+      },
+      {
+        "command": "forkn.cancelTask",
+        "title": "Forkn: Cancel Task"
+      },
+      {
+        "command": "forkn.clearCompleted",
+        "title": "Forkn: Clear Completed Tasks"
+      }
+    ],
+    "configuration": {
+      "title": "Forkn",
+      "properties": {
+        "forkn.maxParallelTasks": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum number of tasks that can run in parallel."
+        },
+        "forkn.providers.claudeCode.path": {
+          "type": "string",
+          "default": "claude",
+          "description": "Path to Claude Code CLI binary.",
+          "scope": "machine"
+        },
+        "forkn.providers.codex.path": {
+          "type": "string",
+          "default": "codex",
+          "description": "Path to Codex CLI binary.",
+          "scope": "machine"
+        },
+        "forkn.providers.codex.sandboxMode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "bypass",
+            "workspace-write",
+            "read-only",
+            "danger-full-access"
+          ],
+          "default": "auto",
+          "description": "Codex sandbox mode. 'auto' uses bypass on Windows (where the sandbox helper is known to fail) and workspace-write elsewhere.",
+          "scope": "machine"
+        },
+        "forkn.providers.antigravity.path": {
+          "type": "string",
+          "default": "agy",
+          "description": "Path to Antigravity CLI binary (agy).",
+          "scope": "machine"
+        },
+        "forkn.providers.opencode.path": {
+          "type": "string",
+          "default": "opencode",
+          "description": "Path to OpenCode CLI binary.",
+          "scope": "machine"
+        },
+        "forkn.telemetry.enabled": {
+          "type": "boolean",
+          "default": false,
+          "scope": "machine",
+          "description": "Send anonymous usage data (events, durations, error types) to help improve Forkn. Off by default. Also requires VS Code's global telemetry to be enabled."
+        },
+        "forkn.telemetry.sharePromptsInErrorReports": {
+          "type": "boolean",
+          "default": false,
+          "scope": "machine",
+          "description": "Include prompt text and task output in error reports only (never for successful tasks) to help debug failures. Off by default. Has no effect unless forkn.telemetry.enabled is on."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}
