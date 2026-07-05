@@ -2,3 +2,8 @@ out/
 node_modules/
 *.vsix
 .vscode-test/
+
+dist/
+.env
+*.pem
+*.key
