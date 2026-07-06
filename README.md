@@ -2,10 +2,14 @@
 
 > One sidebar. Every AI agent. All at once.
 
+![Forkn demo](media/forkn-demo.gif)
+
 Forkn lets you run multiple AI coding agents in parallel from a single VS Code sidebar. Queue tasks across Claude Code, Codex CLI, Antigravity CLI, and OpenCode — all running simultaneously.
 
 ## Features
 
+![Forkn sidebar](media/forkn-sidebar-v3-2x.png)
+![Completed task](media/forkn-completed-card-2x.png)
 - **Parallel execution** — Queue multiple AI tasks and run them simultaneously
 - **4 providers** — Claude Code, Codex CLI, Antigravity CLI, OpenCode
 - **Model selection** — Pick the exact model per provider (Sonnet, Opus, o4-mini, etc.)
