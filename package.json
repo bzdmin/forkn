@@ -2,7 +2,7 @@
   "name": "forkn",
   "displayName": "Forkn",
   "description": "One sidebar. Every AI agent. All at once. Run Claude Code, Codex CLI, Antigravity CLI, and OpenCode in parallel.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "forkn",
   "license": "MIT",
   "repository": {
