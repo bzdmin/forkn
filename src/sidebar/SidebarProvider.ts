@@ -73,9 +73,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [this.extensionUri],
     };
 
-    // Guarantee a fresh webview JS context on every reload — no stale state
-    (webviewView as any).retainContextWhenHidden = false;
-
     webviewView.webview.html = this.getHtml(webviewView.webview);
 
     // Clear the notification badge whenever the user opens/focuses the sidebar
@@ -243,11 +240,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
       this.detectionResults[providerId] = detection;
       vscode.window.showInformationMessage(
-        `&#9989; ${providerId} detected: ${detection.version || 'installed'}`,
+        `✅ ${providerId} detected: ${detection.version || 'installed'}`,
       );
     } else {
       vscode.window.showWarningMessage(
-        `&#10060; Could not verify "${trimmed}" &#8212; it didn't respond to --version.`,
+        `❌ Could not verify "${trimmed}" — it didn't respond to --version.`,
       );
     }
 
@@ -290,6 +287,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   private getHtml(webview: vscode.Webview): string {
     const nonce = getNonce();
+    const extVersion = vscode.extensions.getExtension('forkn.forkn')?.packageJSON.version ?? '1.0';
     const cssUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'media', 'sidebar.css'),
     );
@@ -312,7 +310,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   <!-- HEADER -->
   <div class="hdr">
     ${logoSvg}
-    <span class="hdr-v">v1.0</span>
+    <span class="hdr-v">v${extVersion}</span>
     <span class="hdr-spacer"></span>
     <button class="hdr-btn" id="settingsBtn" title="Provider Settings">&#9881;</button>
   </div>

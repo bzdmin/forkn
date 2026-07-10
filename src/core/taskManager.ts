@@ -214,10 +214,16 @@ export class TaskManager {
 
       provider.run(task.id, task.prompt, model, this.workspaceRoot, {
         onData: (data: string) => {
+          // If the task was cancelled mid-flight, ignore late output from the
+          // dying process — don't stream onto a CANCELLED card.
+          if (task.status !== 'running') { return; }
           task.output += data;
           this.fireUpdate();
         },
         onComplete: () => {
+          // A cancelled task's killed process may still fire onComplete/onError.
+          // Ignore it — the task already reached a terminal state.
+          if (task.status !== 'running') { return; }
           // Success. Record whether we fell back from the requested model.
           if (model !== requestedModel) {
             task.actualModel = model;
@@ -230,6 +236,9 @@ export class TaskManager {
           this.finishTask(task, 'completed');
         },
         onError: (err: string) => {
+          // Cancelled/finished mid-flight: do NOT continue the fallback chain
+          // (that would resurrect a cancelled task and corrupt runningCount).
+          if (task.status !== 'running') { return; }
           attemptErrors.push(`${model}: ${err}`);
           console.warn(`[Forkn] Task ${task.id}: model ${model} failed — ${err}`);
 

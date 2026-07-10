@@ -1,8 +1,8 @@
 {
   "name": "forkn",
   "displayName": "Forkn",
-  "description": "Stop choosing the best AI. Run Claude Code, Codex, Antigravity and OpenCode in parallel from one VS Code sidebar; compare results, pick the winner.",
-  "version": "1.0.2",
+  "description": "Stop switching between AI agents. Run Claude Code, Codex, Antigravity and OpenCode together from one VS Code sidebar. Compare results, rerun tasks, and stay in flow.",
+  "version": "1.0.3",
   "publisher": "forkn",
   "license": "MIT",
   "repository": {

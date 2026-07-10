@@ -46,7 +46,9 @@ export class CodexProvider extends BaseProvider {
       if (process.platform === 'win32') {
         // cmd.exe-safe: double quotes cannot be escaped reliably, so strip
         // them to single quotes. Everything else is literal inside quotes.
-        const safePrompt = prompt.replace(/"/g, "'");
+        // Strip newlines (injection: a raw \n ends the cmd.exe command) then
+        // neutralize quotes (cmd.exe has no reliable quote escape).
+        const safePrompt = prompt.replace(/\r?\n/g, ' ').replace(/"/g, "'");
         const cmd = [
           this.quoteBinary(this.binaryPath),
           'exec', '--model', model, '--skip-git-repo-check',

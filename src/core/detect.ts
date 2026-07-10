@@ -60,10 +60,14 @@ function resolveBinaryPath(bin: string): Promise<string | undefined> {
 /** Run `<binary> --version` and return the version string, or undefined. */
 function getVersion(bin: string): Promise<string | undefined> {
   return new Promise((resolve) => {
+    const isWin = process.platform === 'win32';
+    // With shell:true, an unquoted path containing spaces (e.g. under
+    // "C:\Program Files\") is re-tokenized and fails. Quote it when shelling.
+    const cmd = isWin && /\s/.test(bin) ? `"${bin}"` : bin;
     execFile(
-      bin,
+      cmd,
       ['--version'],
-      { timeout: 10000, shell: process.platform === 'win32' },
+      { timeout: 10000, shell: isWin },
       (err, stdout, stderr) => {
         if (err) {
           resolve(undefined);

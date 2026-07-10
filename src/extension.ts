@@ -74,7 +74,7 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     taskManager.onDidFinishTask((task) => {
       const provLabel = providerLabels[task.provider] ?? task.provider;
-      const cost = formatCost(task.model);
+      const cost = formatCost(task.actualModel || task.model);
       const shortPrompt = task.prompt.length > 50
         ? task.prompt.slice(0, 50) + '…'
         : task.prompt;

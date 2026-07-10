@@ -73,21 +73,42 @@ export abstract class BaseProvider {
   /** Quote one argument for cmd.exe; neutralizes quote-breakout injection. */
   protected winQuote(arg: string): string {
     if (arg === '') { return '""'; }
+    // Collapse newlines FIRST: a raw \n in the single cmd.exe command string
+    // terminates the command and lets the rest parse as a new shell command
+    // (injection via multi-line prompts / shared templates).
+    const flat = arg.replace(/\r?\n/g, ' ');
     // No unsafe characters — pass through bare.
-    if (!/[\s&|<>^%"']/.test(arg)) { return arg; }
+    if (!/[\s&|<>^%"']/.test(flat)) { return flat; }
     // cmd.exe cannot escape a double quote safely; convert to single quotes.
-    return `"${arg.replace(/"/g, "'")}"`;
+    return `"${flat.replace(/"/g, "'")}"`;
   }
 
   kill(taskId: string): void {
     const proc = this.processes.get(taskId);
-    if (proc) {
-      proc.kill('SIGTERM');
-      setTimeout(() => {
-        if (!proc.killed) { proc.kill('SIGKILL'); }
-      }, 5000);
-      this.processes.delete(taskId);
+    if (!proc) { return; }
+    this.processes.delete(taskId);
+
+    if (process.platform === 'win32') {
+      // With shell:true, `proc` is the cmd.exe wrapper; the real CLI is a
+      // grandchild. SIGTERM to the wrapper leaves the CLI running (and
+      // burning tokens). taskkill /T kills the whole tree, /F forces it.
+      if (proc.pid) {
+        try {
+          spawn('taskkill', ['/pid', String(proc.pid), '/T', '/F'], {
+            stdio: 'ignore',
+          });
+        } catch {
+          proc.kill('SIGKILL');
+        }
+      }
+      return;
     }
+
+    // POSIX: graceful then forceful.
+    proc.kill('SIGTERM');
+    setTimeout(() => {
+      if (!proc.killed) { proc.kill('SIGKILL'); }
+    }, 5000);
   }
 
   /** Pause a running process (SIGSTOP). No-op on Windows. */

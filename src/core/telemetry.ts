@@ -123,7 +123,7 @@ export class Telemetry {
       distinct_id: vscode.env.machineId,
       properties: {
         ...properties,
-        forkn_version: '1.0.0',
+        forkn_version: this.context.extension?.packageJSON?.version ?? 'unknown',
         vscode_version: vscode.version,
       },
     });
